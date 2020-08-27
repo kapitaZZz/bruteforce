@@ -13,7 +13,7 @@ def start_user():
     return f'Hello another user: {stats}'
 
 
-@app.route('/')
+@app.route('/auth', methods=['POST'])
 def auth():
     stats['attempts'] += 1
 
