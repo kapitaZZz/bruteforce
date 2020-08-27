@@ -1,32 +1,33 @@
-from flask import request
 
+password = []
 symbols = '0123456789qwertyuiopasdfghjklzxcvbnm_!&^%$#@-*?><'
-password_index = 0
+
+
+def next_char(char):
+    next_index = symbols.index(char) + 1
+    if next_index < len(symbols):
+        return symbols[next_index]
+
+
+def use_index(i):
+    if len(password) <= i:
+        password.append('0')
+        return
+
+    char = next_char(password[i])
+    if char:
+        password[i] = char
+    else:
+        password[i] = '0'
+        use_index(i + 1)
 
 
 def get_password():
-    '''
-    Generating a password from a string of available characters
-    :return: password
-    '''
-    global password_index
-
-    password = ''
-    index = password_index
-    while index > 0:
-        rest = index % len(symbols)
-        index = index // len(symbols)
-
-        password += symbols[rest]
-
-    password_index += 1
-    return password
+    use_index(0)
+    return ''.join(password)
 
 
-status_code = 0
-while status_code != 200:
-    password = get_password()
-    print(password)
-    r = request.post('http://127.0.0.1:5000/auth', data={'login': 'admin', 'password': password})
-    status_code = r.status_code
-    print(r.text)
+if __name__ == '__main__':
+    for step in range(1000000):
+        print(get_password())
+
